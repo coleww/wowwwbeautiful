@@ -1,5 +1,6 @@
 var fs = require('fs')
 var face_detect = require('face-detect')
+var request = require('request')
 var Canvas = require('canvas')
 var Image = Canvas.Image
 var quidprofollow = require('quidprofollow')
@@ -49,11 +50,11 @@ quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, un
 
 
 function hasImage (tweet) {
-  // ...
+  return !!tweet.extended_entities.media
 }
 
 function isSelfie (tweet) {
-  // ...
+  tweet.extended_entities.media
 }
 
 
