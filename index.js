@@ -1,6 +1,5 @@
 var fs = require('fs')
 var face_detect = require('face-detect')
-var request = require('request')
 var Canvas = require('canvas')
 var Image = Canvas.Image
 var quidprofollow = require('quidprofollow')
@@ -21,70 +20,56 @@ quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, un
     T.get('statuses/home_timeline', {count: 200, since_id: data[0].id_str, exclude_replies: true}, function (err, data, response) {
       if (err) throw err
       console.log('got', data.length, 'tweets')
-      
-      
-      // maybe pop off tweets on a timer so as to avoid rate limits...
-      data.forEach(function(tweet){          
+
+
+      // TODO maybe pop off tweets on a timer so as to avoid rate limits...
+      data.forEach(function(tweet){
         console.log(tweet.text)
-        
-        if (hasImage(tweet) && isSelfie(tweet) && tipots(tweet.text) && !tweet.retweeted_status) {
-        
-        // do stuff!!!!!!!!!!!!!!!!!!!!!        
-        // if (res) {
-        //   console.log('bingo', res)
-        //   T.post('statuses/update', {status: res, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
-        //     if (err) throw err
-        //     console.log(data)
-        //   })
+
+        // reject tweets that don't have 1 image, or contain awful language, or that are retweets
+        if (hasImage(tweet) && tipots(tweet.text) && !tweet.retweeted_status) {
+          replyIfTheTweetIsASelfie(tweet)
         }
-      
       })
-      
-      
     })
   })
 })
 
-
-
-
-
 function hasImage (tweet) {
-  return !!tweet.extended_entities.media
+  // for now, only accepting tweets that have exactly 1 image
+  return tweet.extended_entities.media && tweet.extended_entities.media.length == 1
+  // TODO figure out how to handle multi-image tweets (accept them if they are all selfies?)
 }
 
-function isSelfie (tweet) {
-  tweet.extended_entities.media
-}
+function replyIfTheTweetIsASelfie (tweet) {
+  img = new Image
 
+  img.onload = function() {
+    var width = img.width
+    var height = img.height
+    var canvas = new Canvas(width, height)
+    var ctx = canvas.getContext('2d')
+    ctx.drawImage(img, 0, 0, width, height)
+    var result = face_detect.detect_objects({ "canvas" : canvas,
+      "interval" : 5,
+      "min_neighbors" : 1 })
 
+    console.log('Found ' + result.length  + ' faces.')
 
+    // TODO figure out what to do with multiple faces. ugh geometry :<
+    if (result.length == 1) {
+      console.log(result[0])
+      // result[0] contains:
+      // x, y : the coordinates of the top-left corner of the face's bounding box
+      // width, height : the pixel dimensions of the face's bounding box
+      // neighbours, confidence : info from the detection algorithm
 
+      // T.post('statuses/update', {status: res, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
+      //   if (err) throw err
+      //   console.log(data)
+      // })
+    }
+  }
 
-
-
-/// face-detect boilerplate below:
-
-
-// REQUEST an image and draw it to a canvas... hmmm.... howwwwww
-var width = img.width
-  var height = img.height
-  var canvas = new Canvas(width, height)
-
-  ctx = canvas.getContext('2d')
-   ctx.drawImage(img, 0, 0, width, height)
-
-
-
-// ... initialize a canvas object ...
-
-var result = face_detect.detect_objects({ "canvas" : canvas,
-  "interval" : 5,
-  "min_neighbors" : 1 });
-
-console.log('Found ' + result.length  + ' faces.');
-
-for (var i = 0; i < result.length; i++){
-  var face =  result[i];
-  console.log(face);
+  img.src = tweet.extended_entities.media[0].media_url
 }

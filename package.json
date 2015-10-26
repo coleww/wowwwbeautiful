@@ -15,6 +15,7 @@
     "canvas": "^1.2.8",
     "face-detect": "0.0.2",
     "quidprofollow": "^1.2.1",
+    "this-is-probably-ok-to-say": "^1.0.3",
     "twit": "^2.1.0"
   },
   "license": "MIT",
