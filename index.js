@@ -70,23 +70,25 @@ function replyIfTheTweetIsASelfie (tweet) {
     console.log('Found ' + result.length  + ' faces in' + tweet.text)
     console.log(result)
     // TODO figure out what to do with multiple faces. ugh geometry :<
-    if (result.length == 1) {
+    if (result.length) {
       console.log(result[0])
       
       // OH HEY fave it too?!?!?!?!?
       
       var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
-      
+      // if the detected face is at least 1/10th the size of the image, call it a selfie
+      if (result.width > (width / 10)){
       // result[0] contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
       // neighbours, confidence : info from the detection algorithm
 
-      // T.post('statuses/update', {status: toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
-      //   if (err) throw err
-      //   console.log(data)
-      //   fs.unlink('./temp/' +tweet.extended_entities.media[0].media_url + '.png', function(){console.log('deleted something')}) // delete the temp selfie
-      // })
+        T.post('statuses/update', {status: toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
+         if (err) throw err
+         console.log(data)
+         fs.unlink('./temp/' +tweet.extended_entities.media[0].media_url + '.png', function(){console.log('deleted something')}) // delete the temp selfie
+        })
+      }
     }
   }
 
@@ -107,5 +109,5 @@ function replyIfTheTweetIsASelfie (tweet) {
 
 
 setTimeout(function () {
-
-}, 100000000)
+  console.log("TIMEOUT")
+}, 5 * 60 * 1000)
