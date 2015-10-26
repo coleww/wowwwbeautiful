@@ -1,23 +1,22 @@
-var Twit = require('twit')
 var fs = require('fs')
-var quidprofollow = require('quidprofollow');
+var face_detect = require('face-detect')
+var Canvas = require('canvas')
+var Image = Canvas.Image
+var quidprofollow = require('quidprofollow')
 var tipots = require('this-is-probably-ok-to-say')
+var Twit = require('twit')
+var config = require('./config')
 var T = new Twit(config)
 
 var name = 'wowwwbeautiful'
-var config = require('./config')
 
 quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, unfollowed) {
   if (err) throw err
-  console.log('Followed:', followed);
-  console.log('Unfollowed:', unfollowed);
-  
- 
+  console.log('Followed:', followed)
+  console.log('Unfollowed:', unfollowed)
   T.get('statuses/user_timeline', {count: 1, screen_name: name, exclude_replies: false}, function (err, data, response) {
     if (err) throw err
     console.log('grabbing timeline since:', data[0].id_str)
-    
-    
     T.get('statuses/home_timeline', {count: 200, since_id: data[0].id_str, exclude_replies: true}, function (err, data, response) {
       if (err) throw err
       console.log('got', data.length, 'tweets')
@@ -66,17 +65,19 @@ function isSelfie (tweet) {
 /// face-detect boilerplate below:
 
 
+// REQUEST an image and draw it to a canvas... hmmm.... howwwwww
+var width = img.width
+  var height = img.height
+  var canvas = new Canvas(width, height)
+
+  ctx = canvas.getContext('2d')
+   ctx.drawImage(img, 0, 0, width, height)
 
 
-
-
-
-var face_detect = require('face-detect'),
-    Canvas = require('canvas');
 
 // ... initialize a canvas object ...
 
-var result = face_detect.detect_objects({ "canvas" : myCanvas,
+var result = face_detect.detect_objects({ "canvas" : canvas,
   "interval" : 5,
   "min_neighbors" : 1 });
 
