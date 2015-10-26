@@ -15,6 +15,8 @@
     "canvas": "^1.2.8",
     "face-detect": "0.0.2",
     "quidprofollow": "^1.2.1",
+    "request": "^2.65.0",
+    "rimraf": "^2.4.3",
     "this-is-probably-ok-to-say": "^1.0.3",
     "twit": "^2.1.0"
   },
