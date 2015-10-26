@@ -7,6 +7,7 @@ var request = require('request')
 var Twit = require('twit')
 var config = require('./config')
 var T = new Twit(config)
+var pick = require('pick-random')
 
 var name = 'wowwwbeautiful'
 
@@ -71,12 +72,17 @@ function replyIfTheTweetIsASelfie (tweet) {
     // TODO figure out what to do with multiple faces. ugh geometry :<
     if (result.length == 1) {
       console.log(result[0])
+      
+      // OH HEY fave it too?!?!?!?!?
+      
+      var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
+      
       // result[0] contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
       // neighbours, confidence : info from the detection algorithm
 
-      // T.post('statuses/update', {status: res, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
+      // T.post('statuses/update', {status: toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
       //   if (err) throw err
       //   console.log(data)
       //   fs.unlink('./temp/' +tweet.extended_entities.media[0].media_url + '.png', function(){console.log('deleted something')}) // delete the temp selfie
