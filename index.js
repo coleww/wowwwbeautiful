@@ -12,31 +12,58 @@ var callNextTick = require('call-next-tick')
 
 var name = 'wowwwbeautiful'
 
+// quidprofollow makes our following list match our followers list. 
+// that way anyone who follows the bot gets followed back, 
+// and when we search for selfies we can basically just look at our timeline
+// and also ppl can easily opt-out of the bot by unfollowing.
 quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
-ids.push(1447613460)
-
+ids.push(1447613460) // never unfollow sui ever. 
     callNextTick(done, null, ids);
 }}, function reportResults (err, followed, unfollowed) {
-    console.log(err)
+  console.log(err)
   if (err) throw err
   console.log('Followed:', followed)
   console.log('Unfollowed:', unfollowed)
+  
+  // grabbing the last tweet that was tweeted by the bot, so that way we don't double-reply to anyone. 
+  // we could probably just save the last id to a file or smth, but w/e
   T.get('statuses/user_timeline', {count: 1, screen_name: name, exclude_replies: false}, function (err, data, response) {
     if (err) throw err
     console.log('grabbing timeline since:', data[0].id_str)
+    // grabbing tweets since the last time we tweeted. IIRC this maxes out at 200. 
+    // if the bot gets super popular i guess we can page through it. cool
     T.get('statuses/home_timeline', {count: 200, since_id: data[0].id_str, exclude_replies: true}, function (err, data, response) {
       if (err) throw err
       console.log('got', data.length, 'tweets')
 
 
-      // TODO maybe pop off tweets on a timer so as to avoid rate limits...
+      
       var inty
+      
+      
+      // filter the tweets! we can immediately ignore any tweets that:
+      // don't have an image
+      // contain problematic language
+      // are a retweet (otherwise the bot might complement people who didn't opt in to it, which i have feels about)
+      // are actually a tweet from this bot itself lol
       var tweets = data.filter(function(t){
         return hasImage(t) && tipots(t.text) && !t.retweeted_status && t.user.screen_name !== 'wowwwbeautiful'
       })
 
       console.log(tweets.length, "with images")
+      
+      // if we have 30 or more image tweets, 
+      // we won't be able to process them all before the bot runs again, 
+      // so lets just pick 29 and call it alright
+      // maybe later we can make a fancy redis queue, 
+      // as realistically very few images are gonna be selfies
+      // but i don't want to tempt the rate limit here
+      if (tweets.length >= 30) {
+          tweets = pick(tweets, {count: 29})
+      }
 
+    // on a 2 minute timer, pop off a tweet, check if it's a selfie, and reply if so.
+    // if yr out of tweets to process, clear the timer.
       inty = setInterval(function () {
 
         var tweet = tweets.pop()
@@ -52,9 +79,9 @@ ids.push(1447613460)
 
 function hasImage (tweet) {
   // console.log(tweet)
-  // for now, only accepting tweets that have exactly 1 image
+  
   return tweet.extended_entities && tweet.extended_entities.media //&& tweet.extended_entities.media.length == 1
-  // TODO figure out how to handle multi-image tweets (accept them if they are all selfies?)
+ 
 }
 
 function replyIfTheTweetIsASelfie (tweet) {
@@ -81,16 +108,25 @@ function replyIfTheTweetIsASelfie (tweet) {
       })[0] // biggest first!
       console.log(imgdata)
 
-      // OH HEY fave it too?!?!?!?!? yeah!
+      // OH HEY fav
+      
+      
+      
+      
 
-      var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + ' ' + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
-      // if the detected face is at least 1/10th the size of the image, call it a selfie
+     
+      // if the detected face is at least 1/12th the size of the image, call it a selfie
       console.log(imgdata.width, width)
       if (imgdata.width > (width / 12)){
       // imgdata contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
       // neighbours, confidence : info from the detection algorithm
+      
+      
+          // pick a random compliment and a random emohi and append them together to make the reply
+      var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + ' ' + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
+     
         console.log("I TWEETED ", toot, tweet.text, tweet.user.screen_name)
         T.post('favorites/create', {id: tweet.id_str}, function (e, d, r){
           if (e) console.log(e)
@@ -98,6 +134,7 @@ function replyIfTheTweetIsASelfie (tweet) {
            if (err) throw err
            console.log(data)
 
+            // delete the temp selfie file.
            fs.unlink('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:/g, ''), function(){console.log('deleted something')}) // delete the temp selfie
 
           })
