@@ -80,7 +80,7 @@ function replyIfTheTweetIsASelfie (tweet) {
       var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + ' ' + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
       // if the detected face is at least 1/10th the size of the image, call it a selfie
       console.log(imgdata.width, width)
-      if (imgdata.width > (width / 8)){
+      if (imgdata.width > (width / 12)){
       // imgdata contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
