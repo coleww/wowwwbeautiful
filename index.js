@@ -125,7 +125,7 @@ function replyIfTheTweetIsASelfie (tweet) {
       
       
           // pick a random compliment and a random emohi and append them together to make the reply
-      var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + ' ' + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
+      var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n").filter(function(x){ return x})     )[0] + ' ' + pick(fs.readFileSync('./emoji.txt').toString().split("\n").filter(function(x){ return x}))[0]
      
         console.log("I TWEETED ", toot, tweet.text, tweet.user.screen_name)
         T.post('favorites/create', {id: tweet.id_str}, function (e, d, r){
