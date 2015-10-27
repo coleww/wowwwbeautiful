@@ -25,21 +25,19 @@ quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, un
 
       // TODO maybe pop off tweets on a timer so as to avoid rate limits...
       var inty
+      var tweets = data.filter(function(t){
+        return hasImage(tweet) && tipots(tweet.text) && !tweet.retweeted_status
+      })
 
-      setInterval(function () {
+      inty = setInterval(function () {
 
-        var tweet = data.pop()
-        if (!tweet) process.exit(0)
+        var tweet = tweets.pop()
         console.log('pop pop', tweet.text)
 
         // reject tweets that don't have 1 image, or contain awful language, or that are retweets
-        if (hasImage(tweet) && tipots(tweet.text) && !tweet.retweeted_status) {
-          replyIfTheTweetIsASelfie(tweet)
-        } else {
-          console.log("BORK")
-        }
-        if (!data.length) clearInterval(inty)
-      }, 120000)
+        replyIfTheTweetIsASelfie(tweet)
+        if (!tweets.length) clearInterval(inty)
+      }, 120000) // dont get rate limited
     })
   })
 })
@@ -47,7 +45,7 @@ quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, un
 function hasImage (tweet) {
   // console.log(tweet)
   // for now, only accepting tweets that have exactly 1 image
-  return tweet.extended_entities && tweet.extended_entities.media && tweet.extended_entities.media.length == 1
+  return tweet.extended_entities && tweet.extended_entities.media //&& tweet.extended_entities.media.length == 1
   // TODO figure out how to handle multi-image tweets (accept them if they are all selfies?)
 }
 
@@ -70,22 +68,22 @@ function replyIfTheTweetIsASelfie (tweet) {
     console.log('Found ' + result.length  + ' faces in' + tweet.text)
     // TODO figure out what to do with multiple faces. ugh geometry :<
     if (result.length) {
-      result = result.sort(function(a, b){
+      var imgdata = result.sort(function(a, b){
         return b.width - a.width
-      }) // biggest first!
-      console.log(result[0])
+      })[0] // biggest first!
+      console.log(imgdata)
 
       // OH HEY fave it too?!?!?!?!? yeah!
 
       var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
       // if the detected face is at least 1/10th the size of the image, call it a selfie
-      console.log(result[0].width, width / 10)
-      if (result[0].width > (width / 10)){
-      // result[0] contains:
+      console.log(imgdata.width, width)
+      if (imgdata.width > (width / 8)){
+      // imgdata contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
       // neighbours, confidence : info from the detection algorithm
-        console.log("I WOULD HAVE TWEETED AT", toot, tweet.text)
+        console.log("I TWEETED ", toot, tweet.text, tweet.user.screen_name)
         T.post('favorites/create', {id: tweet.id_str}, function (e, d, r){
           if (e) console.log(e)
           T.post('statuses/update', {status: '@' + tweet.user.screen_name + ' ' + toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
