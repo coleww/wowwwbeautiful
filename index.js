@@ -39,7 +39,7 @@ quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, un
           console.log("BORK")
         }
         if (!data.length) clearInterval(inty)
-      }, 15000)
+      }, 120000)
     })
   })
 })
@@ -87,8 +87,8 @@ function replyIfTheTweetIsASelfie (tweet) {
       // neighbours, confidence : info from the detection algorithm
         console.log("I WOULD HAVE TWEETED AT", toot, tweet.text)
         T.post('favorites/create', {id: tweet.id_str}, function (e, d, r){
-          if (e) throw e
-          T.post('statuses/update', {status: toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
+          if (e) console.log(e)
+          T.post('statuses/update', {status: '@' + tweet.user.screen_name + ' ' + toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
            if (err) throw err
            console.log(data)
            fs.unlink('./temp/' +tweet.extended_entities.media[0].media_url + '.png', function(){console.log('deleted something')}) // delete the temp selfie
@@ -113,7 +113,3 @@ function replyIfTheTweetIsASelfie (tweet) {
   })
 }
 
-
-setTimeout(function () {
-  console.log("TIMEOUT")
-}, 5 * 60 * 1000)
