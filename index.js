@@ -11,10 +11,7 @@ var pick = require('pick-random')
 
 var name = 'wowwwbeautiful'
 
-quidprofollow({twitterAPIKeys: config, followFilter: function (ids, done) {
-  ids.push(1447613460)
-  done(ids)
-}}, function reportResults(err, followed, unfollowed) {
+quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, unfollowed) {
   if (err) throw err
   console.log('Followed:', followed)
   console.log('Unfollowed:', unfollowed)
@@ -31,6 +28,8 @@ quidprofollow({twitterAPIKeys: config, followFilter: function (ids, done) {
       var tweets = data.filter(function(t){
         return hasImage(t) && tipots(t.text) && !t.retweeted_status && t.user.screen_name !=== 'wowwwbeautiful'
       })
+
+      console.log(tweets.length, "with images")
 
       inty = setInterval(function () {
 
