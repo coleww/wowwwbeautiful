@@ -12,6 +12,7 @@
     "standard": "4.5.4"
   },
   "dependencies": {
+    "call-next-tick": "^1.1.2",
     "canvas": "^1.2.8",
     "face-detect": "0.0.2",
     "pick-random": "^1.0.1",

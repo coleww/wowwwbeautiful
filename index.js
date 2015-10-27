@@ -8,13 +8,16 @@ var Twit = require('twit')
 var config = require('./config')
 var T = new Twit(config)
 var pick = require('pick-random')
+var callNextTick = require('call-next-tick')
 
 var name = 'wowwwbeautiful'
 
 quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
-  ids.push(1447613460)
-  done(ids)
-}}, function reportResults(err, followed, unfollowed) {
+ids.push(1447613460)
+
+    callNextTick(done, null, ids);
+}}, function reportResults (err, followed, unfollowed) {
+    console.log(err)
   if (err) throw err
   console.log('Followed:', followed)
   console.log('Unfollowed:', unfollowed)
