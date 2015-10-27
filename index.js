@@ -92,7 +92,9 @@ function replyIfTheTweetIsASelfie (tweet) {
           T.post('statuses/update', {status: '@' + tweet.user.screen_name + ' ' + toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
            if (err) throw err
            console.log(data)
-           fs.unlink('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:|\-|\./g, '') + '.png', function(){console.log('deleted something')}) // delete the temp selfie
+
+           fs.unlink('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:/g, ''), function(){console.log('deleted something')}) // delete the temp selfie
+
           })
         })
       }
@@ -100,13 +102,14 @@ function replyIfTheTweetIsASelfie (tweet) {
   }
 
   console.log("WRITING")
-    var ws = fs.createWriteStream('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:|\-|\./g, '')) // temporarily save the selfie cuz idk how to write directly to the canvas :<
+    var ws = fs.createWriteStream('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:/g, '')) // temporarily save the selfie cuz idk how to write directly to the canvas :<
 
   request(tweet.extended_entities.media[0].media_url).pipe(ws)
 
   ws.on("finish", function(){
     console.log("READING")
-      fs.readFile('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:|\-|\./g, ''), function(err, data){
+
+    fs.readFile('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:/g, ''), function(err, data){
       if (err) throw err
       console.log("READ")
       img.src = data
