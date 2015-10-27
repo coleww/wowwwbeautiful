@@ -11,7 +11,10 @@ var pick = require('pick-random')
 
 var name = 'wowwwbeautiful'
 
-quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, unfollowed) {
+quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
+  ids.push(1447613460)
+  done(ids)
+}}, function reportResults(err, followed, unfollowed) {
   if (err) throw err
   console.log('Followed:', followed)
   console.log('Unfollowed:', unfollowed)
