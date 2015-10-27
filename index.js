@@ -26,7 +26,7 @@ quidprofollow({twitterAPIKeys: config}, function reportResults(err, followed, un
       // TODO maybe pop off tweets on a timer so as to avoid rate limits...
       var inty
       var tweets = data.filter(function(t){
-        return hasImage(t) && tipots(t.text) && !t.retweeted_status
+        return hasImage(t) && tipots(t.text) && !t.retweeted_status && t.user.screen_name !=== 'wowwwbeautiful'
       })
 
       inty = setInterval(function () {
