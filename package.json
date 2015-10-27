@@ -14,6 +14,7 @@
   "dependencies": {
     "canvas": "^1.2.8",
     "face-detect": "0.0.2",
+    "pick-random": "^1.0.1",
     "quidprofollow": "^1.2.1",
     "request": "^2.65.0",
     "rimraf": "^2.4.3",

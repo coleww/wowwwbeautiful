@@ -68,25 +68,31 @@ function replyIfTheTweetIsASelfie (tweet) {
       "min_neighbors" : 1 })
 
     console.log('Found ' + result.length  + ' faces in' + tweet.text)
-    console.log(result)
     // TODO figure out what to do with multiple faces. ugh geometry :<
     if (result.length) {
+      result = result.sort(function(a, b){
+        return b.width - a.width
+      }) // biggest first!
       console.log(result[0])
-      
-      // OH HEY fave it too?!?!?!?!?
-      
+
+      // OH HEY fave it too?!?!?!?!? yeah!
+
       var toot = pick(fs.readFileSync('./compliments.txt').toString().split("\n"))[0] + pick(fs.readFileSync('./emoji.txt').toString().split("\n"))[0]
       // if the detected face is at least 1/10th the size of the image, call it a selfie
-      if (result.width > (width / 10)){
+      console.log(result[0].width, width / 10)
+      if (result[0].width > (width / 10)){
       // result[0] contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
       // neighbours, confidence : info from the detection algorithm
-
-        T.post('statuses/update', {status: toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
-         if (err) throw err
-         console.log(data)
-         fs.unlink('./temp/' +tweet.extended_entities.media[0].media_url + '.png', function(){console.log('deleted something')}) // delete the temp selfie
+        console.log("I WOULD HAVE TWEETED AT", toot, tweet.text)
+        T.post('favorites/create', {id: tweet.id_str}, function (e, d, r){
+          if (e) throw e
+          T.post('statuses/update', {status: toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
+           if (err) throw err
+           console.log(data)
+           fs.unlink('./temp/' +tweet.extended_entities.media[0].media_url + '.png', function(){console.log('deleted something')}) // delete the temp selfie
+          })
         })
       }
     }
