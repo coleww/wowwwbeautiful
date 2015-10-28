@@ -58,8 +58,9 @@ ids.push(1447613460) // never unfollow sui ever.
       // maybe later we can make a fancy redis queue, 
       // as realistically very few images are gonna be selfies
       // but i don't want to tempt the rate limit here
-      if (tweets.length >= 30) {
-          tweets = pick(tweets, {count: 29})
+      if (tweets.length >= 15) {
+          console.log("TRUNCATING", tweets.length)
+          tweets = pick(tweets, {count: 14})
       }
 
     // on a 2 minute timer, pop off a tweet, check if it's a selfie, and reply if so.
