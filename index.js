@@ -68,11 +68,13 @@ ids.push(1447613460) // never unfollow sui ever.
       inty = setInterval(function () {
 
         var tweet = tweets.pop()
-        console.log('pop pop', tweet.text)
+        if (tweet) {
+            console.log('pop pop', tweet.text)
 
-        // reject tweets that don't have 1 image, or contain awful language, or that are retweets
-        replyIfTheTweetIsASelfie(tweet)
-        if (!tweets.length) clearInterval(inty)
+            // reject tweets that don't have 1 image, or contain awful language, or that are retweets
+            replyIfTheTweetIsASelfie(tweet)
+            if (!tweets.length) clearInterval(inty)
+        }
       }, 120000) // dont get rate limited
     })
   })
