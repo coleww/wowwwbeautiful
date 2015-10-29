@@ -112,12 +112,12 @@ function replyIfTheTweetIsASelfie (tweet) {
       
       
       
-      
+      var probs = tweet.text.match(/selfie|transisbeautiful|bodypositive/i) ? 0 : (width / 12) 
 
      
       // if the detected face is at least 1/12th the size of the image, call it a selfie
       console.log(imgdata.width, width)
-      if (imgdata.width > (width / 12)){
+      if (imgdata.width > probs){
       // imgdata contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
