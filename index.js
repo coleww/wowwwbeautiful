@@ -98,59 +98,35 @@ function replyIfTheTweetIsASelfie (tweet) {
   img = new Image
   console.log("LOADING", tweet.extended_entities.media[0].media_url)
   img.onload = function() {
-
-
-    // SCALE ACCURATELY HERE! SIZE SEEMS 2 MATTER!
-
-
-
-
+    // resize all images to some standard width,
+    // as the image size seems to affect the face detect somehow?
     var scaly = 500.0 / img.width
     var width = scaly * img.width
     var height = scaly * img.height
-
     var canvas = new Canvas(width, height)
     var ctx = canvas.getContext('2d')
     console.log("DRAWING", width, height)
     ctx.drawImage(img, 0, 0, width, height)
-
-
     var result = face_detect.detect_objects({ "canvas" : canvas,
       "interval" : 5,
       "min_neighbors" : 1 })
-
-    console.log('Found ' + result.length  + ' faces in' + tweet.text)
-    // TODO figure out what to do with multiple faces. ugh geometry :<
+    console.log('Found ', result.length, ' faces in ', tweet.text, 'DATA', result)
     if (result.length) {
       var imgdata = result.sort(function(a, b){
         return b.width - a.width
-      })[0] // biggest first!
+      })[0] // biggest result first! be hopeful!
       console.log(imgdata)
-
-      // OH HEY fav
-
-
-
-      var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12)
-
-
-      // if the detected face is at least 1/12th the size of the image, call it a selfie
-      console.log(imgdata.width, width)
+      var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12.0)
+      // if the detected face is at least 1/12th the size of the image or the tweet contains certain hashtags, call it a selfie
+      console.log(imgdata.width, width / 12.0)
       if (imgdata.width > probs){
-      // imgdata contains:
-      // x, y : the coordinates of the top-left corner of the face's bounding box
-      // width, height : the pixel dimensions of the face's bounding box
-      // neighbours, confidence : info from the detection algorithm
-
-
-
        replyToTweet(tweet)
       }
     }
   }
 
   console.log("WRITING")
-    var ws = fs.createWriteStream('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url)) // temporarily save the selfie cuz idk how to write directly to the canvas :<
+  var ws = fs.createWriteStream('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url)) // temporarily save the selfie cuz idk how to write directly to the canvas :<
 
   request(tweet.extended_entities.media[0].media_url).pipe(ws)
 
