@@ -113,11 +113,14 @@ function replyIfTheTweetIsASelfie (tweet) {
     var ctx = canvas.getContext('2d')
     console.log("DRAWING", width, height)
     ctx.drawImage(img, 0, 0, width, height)
-    var result = face_detect.detect_objects({ "canvas" : canvas,
-      "interval" : 5,
-      "min_neighbors" : 1 })
+    // try different intervals to catch more faces
+    var result = face_detect.detect_objects({canvas: canvas, interval: 5, min_neighbors: 1}).concat(face_detect.detect_objects({canvas: canvas, interval: 9, min_neighbors: 1})).concat(face_detect.detect_objects({canvas: canvas, interval: 14, min_neighbors: 1}))
     console.log('Found ', result.length, ' faces in ', tweet.text, 'DATA', result)
     if (result.length) {
+      var confs = result.filter(function(x){
+        return x.confidence > 0
+      })
+      console.log("feeling very confident about", confs.length)
       var imgdata = result.sort(function(a, b){
         return b.width - a.width
       })[0] // biggest result first! be hopeful!
