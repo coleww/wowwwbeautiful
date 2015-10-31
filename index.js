@@ -113,7 +113,8 @@ function replyIfTheTweetIsASelfie (tweet) {
     var ctx = canvas.getContext('2d')
     console.log("DRAWING", width, height)
     ctx.drawImage(img, 0, 0, width, height)
-    if (isProbablyAMeme(ctx)){
+    var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12.0)
+    if (isProbablyAMeme(ctx) && probs){
       console.log("pretty sure this is a meme or something", tweet.extended_entities.media[0].media_url)
     } else {
       // try different intervals to catch more faces
@@ -127,10 +128,8 @@ function replyIfTheTweetIsASelfie (tweet) {
         var imgdata = result.sort(function(a, b){
           return b.width - a.width
         })[0] // biggest result first! be hopeful!
-        console.log(imgdata)
-        var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12.0)
-        // if the detected face is at least 1/12th the size of the image or the tweet contains certain hashtags, call it a selfie
-        console.log(imgdata.width, width / 12.0)
+        // if the detected face is at least 1/12th the size of the image or if the tweet contains certain hashtags, call it a selfie
+        console.log(imgdata, imgdata.width, width / 12.0)
         if (imgdata.width > probs){
          replyToTweet(tweet)
         }
