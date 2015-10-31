@@ -5,3 +5,4 @@ npm-debug.log
 /temp
 config.js
 optimize/selfies/*
+optimize/out.txt

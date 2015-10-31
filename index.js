@@ -9,7 +9,7 @@ var config = require('./config')
 var T = new Twit(config)
 var pick = require('pick-random')
 var callNextTick = require('call-next-tick')
-
+var Ocrad = require('ocrad.js')
 var compliments = fs.readFileSync('./compliments.txt').toString().split("\n").filter(function(x){ return x})
 var emoji = fs.readFileSync('./emoji.txt').toString().split("\n").filter(function(x){ return x})
 
@@ -113,23 +113,27 @@ function replyIfTheTweetIsASelfie (tweet) {
     var ctx = canvas.getContext('2d')
     console.log("DRAWING", width, height)
     ctx.drawImage(img, 0, 0, width, height)
-    // try different intervals to catch more faces
-    var result = face_detect.detect_objects({canvas: canvas, interval: 5, min_neighbors: 1}).concat(face_detect.detect_objects({canvas: canvas, interval: 9, min_neighbors: 1})).concat(face_detect.detect_objects({canvas: canvas, interval: 14, min_neighbors: 1}))
-    console.log('Found ', result.length, ' faces in ', tweet.text, 'DATA', result)
-    if (result.length) {
-      var confs = result.filter(function(x){
-        return x.confidence > 0
-      })
-      console.log("feeling very confident about", confs.length)
-      var imgdata = result.sort(function(a, b){
-        return b.width - a.width
-      })[0] // biggest result first! be hopeful!
-      console.log(imgdata)
-      var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12.0)
-      // if the detected face is at least 1/12th the size of the image or the tweet contains certain hashtags, call it a selfie
-      console.log(imgdata.width, width / 12.0)
-      if (imgdata.width > probs){
-       replyToTweet(tweet)
+    if (isProbablyAMeme(ctx)){
+      console.log("pretty sure this is a meme or something", tweet.extended_entities.media[0].media_url)
+    } else {
+      // try different intervals to catch more faces
+      var result = face_detect.detect_objects({canvas: canvas, interval: 5, min_neighbors: 1}).concat(face_detect.detect_objects({canvas: canvas, interval: 9, min_neighbors: 1})).concat(face_detect.detect_objects({canvas: canvas, interval: 14, min_neighbors: 1}))
+      console.log('Found ', result.length, ' faces in ', tweet.text, 'DATA', result)
+      if (result.length) {
+        var confs = result.filter(function(x){
+          return x.confidence > 0
+        })
+        console.log("feeling very confident about", confs.length)
+        var imgdata = result.sort(function(a, b){
+          return b.width - a.width
+        })[0] // biggest result first! be hopeful!
+        console.log(imgdata)
+        var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12.0)
+        // if the detected face is at least 1/12th the size of the image or the tweet contains certain hashtags, call it a selfie
+        console.log(imgdata.width, width / 12.0)
+        if (imgdata.width > probs){
+         replyToTweet(tweet)
+        }
       }
     }
   }
@@ -150,7 +154,23 @@ function replyIfTheTweetIsASelfie (tweet) {
   })
 }
 
-
 function cleanUrl (url) {
   return url.replace(/\/|\:/g, '')
+}
+
+function isProbablyAMeme(ctx2, w, h) {
+  var pixels = ctx2.getImageData(0, 0, w, h)
+  for (var i = 0; i < pixels.data.length; i += 4) {
+    var avg = (pixels.data[i] + pixels.data[i + 1] + pixels.data[i + 2]) / 3
+    var ne = avg > 240 ? 0 : 255
+    pixels.data[i] = ne
+    pixels.data[i + 1] = ne
+    pixels.data[i + 2] = ne
+  }
+
+  var canvas = new Canvas(w, h)
+  var ctx = canvas.getContext('2d')
+  ctx.putImageData(pixels, 0, 0)
+  var ocr = Ocrad(canvas).replace(/\W|\_/g, '')
+  return ocr.length > 12
 }
