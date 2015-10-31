@@ -24,15 +24,12 @@ ids.push(1447613460) // never unfollow sui ever.
   if (err) throw err
   console.log('Followed:', followed)
   console.log('Unfollowed:', unfollowed)
-  
-  // grabbing the last tweet that was tweeted by the bot, so that way we don't double-reply to anyone. 
-  // we could probably just save the last id to a file or smth, but w/e
-  T.get('statuses/user_timeline', {count: 1, screen_name: name, exclude_replies: false}, function (err, data, response) {
-    if (err) throw err
-    console.log('grabbing timeline since:', data[0].id_str)
+  var last = fs.readFileSync('./lastId').toString()
+ 
+      console.log('grabbing timeline since:', last)
     // grabbing tweets since the last time we tweeted. IIRC this maxes out at 200. 
     // if the bot gets super popular i guess we can page through it. cool
-    T.get('statuses/home_timeline', {count: 200, since_id: data[0].id_str, exclude_replies: true}, function (err, data, response) {
+    T.get('statuses/home_timeline', {count: 200, since_id: last, exclude_replies: true}, function (err, data, response) {
       if (err) throw err
       console.log('got', data.length, 'tweets')
 
@@ -68,15 +65,17 @@ ids.push(1447613460) // never unfollow sui ever.
       inty = setInterval(function () {
 
         var tweet = tweets.pop()
-        console.log('pop pop', tweet.text)
+        if (tweet) {
+            console.log('pop pop', tweet.text)
 
-        // reject tweets that don't have 1 image, or contain awful language, or that are retweets
-        replyIfTheTweetIsASelfie(tweet)
-        if (!tweets.length) clearInterval(inty)
+            // reject tweets that don't have 1 image, or contain awful language, or that are retweets
+            replyIfTheTweetIsASelfie(tweet)
+            if (!tweets.length) clearInterval(inty)
+        }
       }, 120000) // dont get rate limited
     })
   })
-})
+
 
 function hasImage (tweet) {
   // console.log(tweet)
@@ -113,12 +112,12 @@ function replyIfTheTweetIsASelfie (tweet) {
       
       
       
-      
+      var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12) 
 
      
       // if the detected face is at least 1/12th the size of the image, call it a selfie
       console.log(imgdata.width, width)
-      if (imgdata.width > (width / 12)){
+      if (imgdata.width > probs){
       // imgdata contains:
       // x, y : the coordinates of the top-left corner of the face's bounding box
       // width, height : the pixel dimensions of the face's bounding box
@@ -134,7 +133,7 @@ function replyIfTheTweetIsASelfie (tweet) {
           T.post('statuses/update', {status: '@' + tweet.user.screen_name + ' ' + toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
            if (err) throw err
            console.log(data)
-
+           fs.writeFileSync('./lastId', data.id_str)
             // delete the temp selfie file.
            fs.unlink('./temp/' + tweet.extended_entities.media[0].media_url.replace(/\/|\:/g, ''), function(){console.log('deleted something')}) // delete the temp selfie
 
