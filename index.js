@@ -114,7 +114,7 @@ function replyIfTheTweetIsASelfie (tweet) {
     console.log("DRAWING", width, height)
     ctx.drawImage(img, 0, 0, width, height)
     var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12.0)
-    if (isProbablyAMeme(ctx) && probs){
+    if (isProbablyAMeme(ctx, width, height) && probs){
       console.log("pretty sure this is a meme or something", tweet.extended_entities.media[0].media_url)
     } else {
       // try different intervals to catch more faces
