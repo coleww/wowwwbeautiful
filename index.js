@@ -64,7 +64,13 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
       if (tweet) {
           console.log('pop pop', tweet.text)
           replyIfTheTweetIsASelfie(tweet)
-          if (!tweets.length) clearInterval(inty)
+          if (!tweets.length) {
+            clearInterval(inty)
+            process.exit(0)
+          }
+      } else {
+        clearInterval(inty)
+        process.exit(0)
       }
     }, 120000) // dont get rate limited
   })
