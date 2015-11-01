@@ -113,7 +113,7 @@ function replyIfTheTweetIsASelfie (tweet) {
     var ctx = canvas.getContext('2d')
     console.log("DRAWING", width, height)
     ctx.drawImage(img, 0, 0, width, height)
-    var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 12.0)
+    var probs = tweet.text.match(/selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i) ? 0 : (width / 15.0)
     if (isProbablyAMeme(ctx, width, height) && probs){
       console.log("pretty sure this is a meme or something", tweet.extended_entities.media[0].media_url)
     } else {
