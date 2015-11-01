@@ -23,7 +23,7 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
   ids.push(1447613460) // never unfollow sui ever.
   callNextTick(done, null, ids);
 }}, function reportResults (err, followed, unfollowed) {
-  console.log(err)
+  console.log('qpferr', err)
   if (err) throw err
   console.log('Followed:', followed)
   console.log('Unfollowed:', unfollowed)
@@ -62,7 +62,7 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
     inty = setInterval(function () {
       var tweet = tweets.pop()
       if (tweet) {
-          console.log('pop pop', tweet.text)
+          console.log('PROCESSING:', tweet.text)
           replyIfTheTweetIsASelfie(tweet)
           if (!tweets.length) {
             clearInterval(inty)
@@ -129,7 +129,7 @@ function replyIfTheTweetIsASelfie (tweet) {
           return b.width - a.width
         })[0] // biggest result first! be hopeful!
         // if the detected face is at least 1/12th the size of the image or if the tweet contains certain hashtags, call it a selfie
-        console.log(imgdata, imgdata.width, width / 12.0)
+        console.log('DATAS', imgdata, imgdata.width, width / 12.0)
         if (imgdata.width > probs){
          replyToTweet(tweet)
         }
@@ -137,17 +137,16 @@ function replyIfTheTweetIsASelfie (tweet) {
     }
   }
 
-  console.log("WRITING")
+ 
   var ws = fs.createWriteStream('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url)) // temporarily save the selfie cuz idk how to write directly to the canvas :<
 
   request(tweet.extended_entities.media[0].media_url).pipe(ws)
 
   ws.on("finish", function(){
-    console.log("READING")
 
     fs.readFile('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url), function(err, data){
       if (err) throw err
-      console.log("READ")
+  
       img.src = data
     })
   })
@@ -171,5 +170,6 @@ function isProbablyAMeme(ctx2, w, h) {
   var ctx = canvas.getContext('2d')
   ctx.putImageData(pixels, 0, 0)
   var ocr = Ocrad(canvas).replace(/\W|\_/g, '')
+  console.log("DETECTED TEXT:", ocr)
   return ocr.length > 12
 }
