@@ -125,13 +125,17 @@ function replyIfTheTweetIsASelfie (tweet) {
           return x.confidence > 0
         })
         console.log("feeling very confident about", confs.length)
-        var imgdata = result.sort(function(a, b){
-          return b.width - a.width
-        })[0] // biggest result first! be hopeful!
-        // if the detected face is at least 1/12th the size of the image or if the tweet contains certain hashtags, call it a selfie
-        console.log('DATAS', imgdata, imgdata.width, width / 12.0)
-        if (imgdata.width > probs){
-         replyToTweet(tweet)
+        if (!confs.length && probs){
+          console.log('not feeling confident enough to respond to', tweet.text)
+        } else {
+          var imgdata = result.sort(function(a, b){
+            return b.width - a.width
+          })[0] // biggest result first! be hopeful!
+          // if the detected face is at least 1/12th the size of the image or if the tweet contains certain hashtags, call it a selfie
+          console.log('DATAS', imgdata, imgdata.width, width / 12.0)
+          if (imgdata.width > probs){
+            replyToTweet(tweet)
+          }
         }
       }
     }
