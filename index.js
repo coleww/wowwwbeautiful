@@ -117,31 +117,42 @@ function replyIfTheTweetIsASelfie (tweet) {
     if (isProbablyAMeme(ctx, width, height) && probs){
       console.log("pretty sure this is a meme or something", tweet.extended_entities.media[0].media_url)
     } else {
-      // try different intervals to catch more faces
-      var result = face_detect.detect_objects({canvas: canvas, interval: 5, min_neighbors: 1}).concat(face_detect.detect_objects({canvas: canvas, interval: 9, min_neighbors: 1})).concat(face_detect.detect_objects({canvas: canvas, interval: 14, min_neighbors: 1}))
-      console.log('Found ', result.length, ' faces in ', tweet.text, 'DATA', result)
-      if (result.length) {
-        var confs = result.filter(function(x){
-          return x.confidence > 0
-        })
-        console.log("feeling very confident about", confs.length)
-        if (!confs.length && probs){
-          console.log('not feeling confident enough to respond to', tweet.text)
-        } else {
-          var imgdata = result.sort(function(a, b){
-            return b.width - a.width
-          })[0] // biggest result first! be hopeful!
-          // if the detected face is at least 1/12th the size of the image or if the tweet contains certain hashtags, call it a selfie
-          console.log('DATAS', imgdata, imgdata.width, width / 12.0)
-          if (imgdata.width > probs){
-            replyToTweet(tweet)
+
+      cv.readImage('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url), function(err, im){
+
+        // TRY SEVERAL CASCADES! (how long does it take to process? gonna have to make it WAYYYY more async/streaming)
+        // haarcascade_profileface.xml
+        // haarcascade_eye_tree_eyeglasses.xml
+        // haarcascade_fullbody.xml
+
+
+        im.detectObject(cv.FACE_CASCADE, {}, function(err, result){ // REPLACE THIS WITH PATH TO VARIOUS CASCADES?
+          console.log('Found ', result.length, ' faces in ', tweet.text, 'DATA', result)
+          if (result.length) {
+            var confs = result.filter(function(x){
+              // idk what it returns... i guess we'll see once it logs something!
+              return x.confidence ? (x.confidence > 0) : true
+            })
+            console.log("feeling very confident about", confs.length)
+            if (!confs.length && probs){
+              console.log('not feeling confident enough to respond to', tweet.text)
+            } else {
+              var imgdata = result.sort(function(a, b){
+                return b.width - a.width
+              })[0] // biggest result first! be hopeful!
+              // if the detected face is at least 1/12th the size of the image or if the tweet contains certain hashtags, call it a selfie
+              console.log('DATAS', imgdata, imgdata.width, width / 12.0)
+              if (imgdata.width > probs){
+                replyToTweet(tweet)
+              }
+            }
           }
-        }
-      }
+        });
+      })
     }
   }
 
- 
+
   var ws = fs.createWriteStream('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url)) // temporarily save the selfie cuz idk how to write directly to the canvas :<
 
   request(tweet.extended_entities.media[0].media_url).pipe(ws)
@@ -150,7 +161,7 @@ function replyIfTheTweetIsASelfie (tweet) {
 
     fs.readFile('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url), function(err, data){
       if (err) throw err
-  
+
       img.src = data
     })
   })
