@@ -49,7 +49,7 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
     // wow this is a lovely piece of code to make sure we only look at 1 image-y tweet per user.
     var seenUsers = {}
     tweets = tweets.filter(function(t){
-      return !seenUsers[t.user.screen_name] && seenUsers[t.user.screen_name] = true
+      return !seenUsers[t.user.screen_name] && (seenUsers[t.user.screen_name] = true)
     })
     console.log('seen:', JSON.stringify(seenUsers))
 
