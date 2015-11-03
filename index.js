@@ -42,7 +42,7 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
     // are a retweet (otherwise the bot might complement people who didn't opt in to it, which i have feels about)
     // are actually a tweet from this bot itself lol
     var tweets = data.filter(function(t){
-      return hasImage(t) && tipots(t.text) && !t.retweeted_status && t.user.screen_name !== 'wowwwbeautiful' && !t.text.match(/sayhername|tw |cw |trigger|warning/i)
+      return hasImage(t) && tipots(t.text) && !t.retweeted_status && t.user.screen_name !== 'wowwwbeautiful' && !t.text.match(/\@\w+|sayhername|tw |cw |trigger|warning/i)
     })
 
     console.log(tweets.length, "with images")
