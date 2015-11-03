@@ -1,5 +1,4 @@
 var fs = require('fs')
-var face_detect = require('face-detect')
 var cv = require('opencv')
 var Canvas = require('canvas')
 var quidprofollow = require('quidprofollow')
