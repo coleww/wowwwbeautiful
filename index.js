@@ -200,3 +200,8 @@ function isProbablyAMeme(ctx2, w, h) {
   console.log("DETECTED TEXT:", ocr)
   return ocr.length > 12
 }
+
+setTimeout(function () {
+  console.log("WE OUT!")
+  // just under a half hour
+}, 30 * 999 * 60)
