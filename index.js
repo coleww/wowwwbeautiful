@@ -14,7 +14,9 @@ var compliments = fs.readFileSync('./compliments.txt').toString().split("\n").fi
 var emoji = fs.readFileSync('./emoji.txt').toString().split("\n").filter(function(x){ return x})
 
 var name = 'wowwwbeautiful'
-
+console.log("_____________________________________")
+console.log("_____________STARTING______UP______!_")
+console.log("__________________________________?__")
 // quidprofollow makes our following list match our followers list.
 // that way anyone who follows the bot gets followed back,
 // and when we search for selfies we can basically just look at our timeline
@@ -23,7 +25,7 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
   ids.push(1447613460) // never unfollow sui ever.
   callNextTick(done, null, ids);
 }}, function reportResults (err, followed, unfollowed) {
-  console.log('qpferr', err)
+  console.log('qpf-err', err)
   if (err) throw err
   console.log('Followed:', followed)
   console.log('Unfollowed:', unfollowed)
@@ -44,11 +46,19 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
       return hasImage(t) && tipots(t.text) && !t.retweeted_status && t.user.screen_name !== 'wowwwbeautiful' && !t.text.match(/\@\w+|sayhername|tw |cw |trigger|warning/i)
     })
 
+    // wow this is a lovely piece of code to make sure we only look at 1 image-y tweet per user.
+    var seenUsers = {}
+    tweets = tweets.filter(function(t){
+      return !seenUsers[t.user.screen_name] && seenUsers[t.user.screen_name] = true
+    })
+    console.log('seen:', JSON.stringify(seenUsers))
+
     console.log(tweets.length, "with images")
 
-    // if we have 30 or more image tweets,
+    // if we have a lot of image tweets,
     // we won't be able to process them all before the bot runs again,
-    // so lets just pick 29 and call it alright
+    // and that would be bad potentially
+    // so lets just pick 10 and call it alright
     // maybe later we can make a fancy redis queue,
     // as realistically very few images are gonna be selfies
     // but i don't want to tempt the rate limit here
@@ -78,8 +88,8 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
 
 
 function hasImage (tweet) {
-  // console.log(tweet)
-  return tweet.extended_entities && tweet.extended_entities.media //&& tweet.extended_entities.media.length == 1
+  // only look at tweets that have 1 image for now. better to focus than try to catch everything i think...
+  return tweet.extended_entities && tweet.extended_entities.media && tweet.extended_entities.media.length == 1
 }
 
 function replyToTweet (tweet) {
@@ -126,8 +136,9 @@ function replyIfTheTweetIsASelfie (tweet) {
         // haarcascade_eye_tree_eyeglasses.xml
         // haarcascade_fullbody.xml
 
-
+        console.log('starting to CV', new Date())
         im.detectObject(cv.FACE_CASCADE, {}, function(err, result){ // REPLACE THIS WITH PATH TO VARIOUS CASCADES?
+          console.log('done with CV', new Date())
           console.log('Found ', result.length, ' faces in ', tweet.text, 'DATA', result)
           if (result.length) {
             var confs = result.filter(function(x){
