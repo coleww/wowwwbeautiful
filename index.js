@@ -118,6 +118,7 @@ function replyIfTheTweetIsASelfie (tweet) {
       console.log("pretty sure this is a meme or something", tweet.extended_entities.media[0].media_url)
     } else {
 
+      // umm, we already loaded the image, but thats ok. thats fine. whatever for now. hope this works!
       cv.readImage('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url), function(err, im){
 
         // TRY SEVERAL CASCADES! (how long does it take to process? gonna have to make it WAYYYY more async/streaming)
