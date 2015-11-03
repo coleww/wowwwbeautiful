@@ -9,6 +9,7 @@
     "opencv": "^3.2.0",
     "pick-random": "^1.0.1",
     "quidprofollow": "^1.2.1",
+    "redis": "^2.3.0",
     "request": "^2.65.0",
     "rimraf": "^2.4.3",
     "this-is-probably-ok-to-say": "^1.0.7",
