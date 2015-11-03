@@ -1,16 +1,4 @@
-var redis = require('redis')
-var client = redis.createClient()
 var tipots = require('this-is-probably-ok-to-say')
-var Twit = require('twit')
-var config = require('./config')
-var T = new Twit(config)
-
-var stream = T.stream('user')
-
-stream.on('tweet', function (t) {
-  console.log('processing', t.user.screen_name, t.text)
-  if (thisTweetIsPromising(t)) client.publish("OCVq", JSON.stringify(t))
-})
 
 function thisTweetIsPromising (t) {
   return hasImage(t) && willNotNotifyOtherUsers(t) && willHopefullyNotBeDisrespectful(t)
@@ -30,4 +18,11 @@ function willNotNotifyOtherUsers (t) {
 function willHopefullyNotBeDisrespectful (t) {
   // runs iscool on the text via tipots. other strings to avoid can be added to the regex.
   return tipots(t.text) && !t.text.match(/sayhername|tw |cw |trigger|warning/i))
+}
+
+module.exports = {
+  hasImage: hasImage,
+  willNotNotifyOtherUsers: willNotNotifyOtherUsers,
+  willHopefullyNotBeDisrespectful: willHopefullyNotBeDisrespectful,
+  thisTweetIsPromising: thisTweetIsPromising
 }

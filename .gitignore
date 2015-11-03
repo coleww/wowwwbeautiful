@@ -3,6 +3,6 @@
 /www/bundle.js
 npm-debug.log
 /temp
-config.js
+src/config.js
 optimize/selfies/*
 optimize/out.txt
