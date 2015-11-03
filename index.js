@@ -53,9 +53,9 @@ quidprofollow({twitterAPIKeys: config, retainFilter: function (ids, done) {
     // maybe later we can make a fancy redis queue,
     // as realistically very few images are gonna be selfies
     // but i don't want to tempt the rate limit here
-    if (tweets.length >= 15) {
+    if (tweets.length >= 11) {
         console.log("TRUNCATING", tweets.length)
-        tweets = pick(tweets, {count: 14})
+        tweets = pick(tweets, {count: 10})
     }
 
   // on a 2 minute timer, pop off a tweet, check if it's a selfie, and reply if so.
