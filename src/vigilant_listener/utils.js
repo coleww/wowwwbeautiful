@@ -1,4 +1,5 @@
 var tipots = require('this-is-probably-ok-to-say')
+var filterRegex = require('../config').filterRegex
 
 function thisTweetIsPromising (t) {
   return hasImage(t) && willNotNotifyOtherUsers(t) && willHopefullyNotBeDisrespectful(t)
@@ -17,7 +18,7 @@ function willNotNotifyOtherUsers (t) {
 
 function willHopefullyNotBeDisrespectful (t) {
   // runs iscool on the text via tipots. other strings to avoid can be added to the regex.
-  return tipots(t.text) && !t.text.match(/sayhername|tw |cw |trigger|warning/i))
+  return tipots(t.text) && !t.text.match(filterRegex)
 }
 
 module.exports = {
