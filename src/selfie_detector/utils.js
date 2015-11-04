@@ -52,7 +52,7 @@ function detectText (path, cb) {
   })
 }
 
-function detectSelfie (path, t, ht, cb) {
+function detectSelfie (path, t, ht, ms, cb) {
   cv.readImage(path, function(err, im){
     im.detectObject(cv.FACE_CASCADE, {}, function(err, result){
       console.log(t.id_str, 'Found faces', result.length)
@@ -60,7 +60,7 @@ function detectSelfie (path, t, ht, cb) {
         var imgdata = result.sort(function(a, b){
           return b.width - a.width
         })[0]
-        var probs = ht ? 0 : (width / 15.0)
+        var probs = ht ? 0 : (im.width / ms)
         console.log(t.id_str, 'DATA', imgdata, imgdata.width, probs)
         if (imgdata.width > probs) cb(t)
       }
