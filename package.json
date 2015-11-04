@@ -23,6 +23,7 @@
   "description": "selfie-faves ----------------",
   "author": "Cole Willsea <coleww@gmail.com> (http://colewillsea.com/)",
   "devDependencies": {
+    "emoji-regex": "^6.0.0",
     "standard": "^5.3.1",
     "tap": "^2.2.0"
   }
