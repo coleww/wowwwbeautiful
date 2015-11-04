@@ -1,7 +1,8 @@
 
 language: node_js
 before_install:
-  - sudo apt-get update -qq
-  - sudo apt-get install -y libcairo2-dev libopencv-dev
+  - sudo apt-get update
+  - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
+  - sudo apt-get install libopencv-dev
 node_js:
   - "0.12"
