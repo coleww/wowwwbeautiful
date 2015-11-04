@@ -1,3 +1,7 @@
+
 language: node_js
+before_install:
+  - sudo apt-get update -qq
+  - sudo apt-get install -y libcairo2-dev libopencv-dev
 node_js:
   - "0.12"
