@@ -2,4 +2,7 @@ var tap = require('tap')
 
 
 
-tap.test('', function (t) {})
+tap.test('wow', function (t) {
+  t.plan(1)
+  t.ok(true)
+})
