@@ -198,7 +198,7 @@ function isProbablyAMeme(ctx2, w, h) {
   ctx.putImageData(pixels, 0, 0)
   var ocr = Ocrad(canvas).replace(/\W|\_/g, '')
   console.log("DETECTED TEXT:", ocr)
-  return ocr.length > 12
+  return ocr.length > 8
 }
 
 setTimeout(function () {
