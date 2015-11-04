@@ -10,7 +10,7 @@
     "quidprofollow": "^1.2.1",
     "request": "^2.65.0",
     "rimraf": "^2.4.3",
-    "this-is-probably-ok-to-say": "^1.0.3",
+    "this-is-probably-ok-to-say": "^1.0.5",
     "ocrad.js": "https://github.com/antimatter15/ocrad.js/archive/master.tar.gz",
     "twit": "^2.1.0"
   },
