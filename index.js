@@ -116,7 +116,7 @@ function replyIfTheTweetIsASelfie (tweet) {
   img.onload = function() {
     // resize all images to some standard width,
     // as the image size seems to affect the face detect somehow?
-    var scaly = 500.0 / img.width
+    var scaly = 1
     var width = scaly * img.width
     var height = scaly * img.height
     var canvas = new Canvas(width, height)
