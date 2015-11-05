@@ -5,13 +5,13 @@
   "dependencies": {
     "call-next-tick": "^1.1.2",
     "canvas": "^1.2.8",
+    "ocrad.js": "https://github.com/antimatter15/ocrad.js/archive/master.tar.gz",
     "opencv": "^3.2.0",
     "pick-random": "^1.0.1",
     "quidprofollow": "^1.2.1",
     "request": "^2.65.0",
     "rimraf": "^2.4.3",
-    "this-is-probably-ok-to-say": "^1.0.5",
-    "ocrad.js": "https://github.com/antimatter15/ocrad.js/archive/master.tar.gz",
+    "this-is-probably-ok-to-say": "^1.0.7",
     "twit": "^2.1.0"
   },
   "license": "MIT",
