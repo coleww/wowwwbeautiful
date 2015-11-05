@@ -2,7 +2,7 @@ var redis = require('redis')
 var client = redis.createClient()
 var thisTweetIsPromising = require('./utils').thisTweetIsPromising
 var Twit = require('twit')
-var config = require('../config')
+var config = require('../config').twitter
 var T = new Twit(config)
 
 var stream = T.stream('user')
