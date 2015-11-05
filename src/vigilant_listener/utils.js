@@ -7,7 +7,7 @@ function thisTweetIsPromising (t) {
 
 function hasImage (t) {
   // only look at tweets that have 1 image for now. better to focus than try to catch everything i think...
-  return t.extended_entities && t.extended_entities.media && t.extended_entities.media.length == 1
+  return t.extended_entities && t.extended_entities.media && t.extended_entities.media.length === 1
 }
 
 function willNotNotifyOtherUsers (t) {

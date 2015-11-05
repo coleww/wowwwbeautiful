@@ -15,7 +15,7 @@ client.on('message', function (channel, message) {
   var ws = fs.createWriteStream(path)
   var hasSelfieHashtag = t.text.match(selfieRegex)
   request(url).pipe(ws)
-  ws.on('finish', function(){
+  ws.on('finish', function () {
     utils.detectText(path, function (ocr) {
       if (ocr.length > ocrMax) {
         console.log(t.id_str, 'is a meme probably', ocr)

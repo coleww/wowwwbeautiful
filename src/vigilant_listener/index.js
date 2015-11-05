@@ -9,5 +9,5 @@ var stream = T.stream('user')
 
 stream.on('tweet', function (t) {
   console.log('processing', t.user.screen_name, t.text)
-  if (thisTweetIsPromising(t)) client.publish("OCVq", JSON.stringify(t))
+  if (thisTweetIsPromising(t)) client.publish('OCVq', JSON.stringify(t))
 })

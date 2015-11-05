@@ -4,7 +4,7 @@ var compliments = loadList('compliments.txt')
 var emoji = loadList('emoji.txt')
 
 function loadList (path) {
-  return fs.readFileSync(__dirname + '/' + path).toString().split("\n").filter(function(x){return x})
+  return fs.readFileSync(__dirname + '/' + path).toString().split('\n').filter(function (x) {return x})
 }
 
 function compliment () {
