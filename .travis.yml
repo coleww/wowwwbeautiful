@@ -1,12 +1,20 @@
+sudo: false
 language: node_js
 node_js:
   - "0.12"
 cache:
   directories:
-    - opencv
+    - $HOME/opencv
+addons:
+  apt:
+    packages:
+    - libcairo2-dev
+    - libjpeg8-dev
+    - libpango1.0-dev
+    - libgif-dev
+    - build-essential
+    - g++
 before_install:
-  - sudo apt-get update
-  - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
   - git clone https://github.com/Itseez/opencv.git
   - cd opencv
   - git checkout 2.4
