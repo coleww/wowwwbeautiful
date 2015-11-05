@@ -13,7 +13,7 @@ tap.test('detects text', function (t) {
 })
 
 tap.test('detects faces', function (t) {
-  var testImgs = getImagePaths('text')
+  var testImgs = getImagePaths('yep')
   t.plan(testImgs.length)
   testImgs.forEach(function (img) {
     utils.detectText(img, function (text) {
@@ -23,7 +23,7 @@ tap.test('detects faces', function (t) {
 })
 
 tap.test('does not detect not face things', function (t) {
-  var testImgs = getImagePaths('text')
+  var testImgs = getImagePaths('nope')
   t.plan(testImgs.length)
   testImgs.forEach(function (img) {
     utils.detectText(img, function (text) {
