@@ -5,8 +5,8 @@ var Canvas = require('canvas')
 
 function detectText (path, cb) {
   var Image = Canvas.Image
-  var img = new Image
-  img.onload = function() {
+  var img = new Image()
+  img.onload = function () {
     var width = img.width
     var height = img.height
     var canvas = new Canvas(width, height)
@@ -32,25 +32,33 @@ function detectText (path, cb) {
 
     cb(detected)
   }
-  fs.readFile(path, function(err, data){
+  fs.readFile(path, function (err, data) {
     if (err) console.log(err)
     img.src = data
   })
 }
 
 function detectSelfie (path, t, ht, ms, cb) {
-  cv.readImage(path, function(err, im){
-    im.detectObject(cv.FACE_CASCADE, {}, function(err, result){
-      console.log(t.id_str, 'Found faces', result.length)
-      if (result.length) {
-        var imgdata = result.sort(function(a, b){
-          return b.width - a.width
-        })[0]
-        var probs = ht ? 0 : (im.width / ms)
-        console.log(t.id_str, 'DATA', imgdata, imgdata.width, probs)
-        if (imgdata.width > probs) cb(t)
-      }
-    })
+  cv.readImage(path, function (err, im) {
+    if (err) {
+      console.log(err)
+    } else {
+      im.detectObject(cv.FACE_CASCADE, {}, function (err, result) {
+        if (err) {
+          console.log(err)
+        } else {
+          console.log(t.id_str, 'Found faces', result.length)
+          if (result.length) {
+            var imgdata = result.sort(function (a, b) {
+              return b.width - a.width
+            })[0]
+            var probs = ht ? 0 : (im.width / ms)
+            console.log(t.id_str, 'DATA', imgdata, imgdata.width, probs)
+            if (imgdata.width > probs) cb(t)
+          }
+        }
+      })
+    }
   })
 }
 
