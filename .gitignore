@@ -6,4 +6,3 @@ npm-debug.log
 src/SECRETconfig.js
 optimize/selfies/*
 optimize/out.txt
-src/selfie_detector/test_imgs
