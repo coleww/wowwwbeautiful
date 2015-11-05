@@ -19,17 +19,16 @@ client.on('message', function (channel, message) {
     utils.detectText(path, function (ocr) {
       if (ocr.length > ocrMax) {
         console.log(t.id_str, 'is a meme probably', ocr)
+        fs.unlink(path, function () {})
       } else {
         utils.detectSelfie(path, t, hasSelfieHashtag, minSize, function (itsProbablyASelfie) {
           console.log(t.id_str, 'is a selfie probably!!!')
-          client.rpush('selfies', JSON.stringify(itsProbablyASelfie), redis.print);
+          client.rpush('selfies', JSON.stringify(itsProbablyASelfie), redis.print)
+          fs.unlink(path, function () {})
         })
       }
     })
   })
 })
-// MUST DO THIS TOOOOOO
-  //    fs.unlink('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url), function(){console.log('deleted something')}) // delete the temp selfie
-
 
 client.subscribe('OCVq')
