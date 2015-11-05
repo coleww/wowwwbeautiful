@@ -1,4 +1,9 @@
 language: node_js
+node_js:
+  - "0.12"
+cache:
+  directories:
+    - opencv
 before_install:
   - sudo apt-get update
   - sudo apt-get install libcairo2-dev libjpeg8-dev libpango1.0-dev libgif-dev build-essential g++
@@ -11,10 +16,3 @@ before_install:
   - make -j4
   - sudo make -j4 install
   - cd ../..
-
-node_js:
-  - "0.12"
-
-cache:
-  directories:
-    - $HOME/opencv
