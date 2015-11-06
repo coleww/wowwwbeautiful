@@ -95,18 +95,24 @@ function hasImage (tweet) {
 function replyToTweet (tweet) {
   // pick a random compliment and a random emoji and append them together to make the reply
   var toot = pick(compliments)[0] + ' ' + pick(emoji)[0]
-
-  console.log("I TWEETED ", toot, tweet.text, tweet.user.screen_name)
-  T.post('favorites/create', {id: tweet.id_str}, function (e, d, r){
-    if (e) console.log(e)
-    T.post('statuses/update', {status: '@' + tweet.user.screen_name + ' ' + toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
-     if (err) throw err
-     console.log(data)
-     fs.writeFileSync('./lastId', data.id_str)
-      // delete the temp selfie file.
-     fs.unlink('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url), function(){console.log('deleted something')}) // delete the temp selfie
+  var un = tweet.user.screen_name
+  var isSuiAanandOrCole = !!un.match(/^(swayandsea|colewillsea|aanand)$/)
+  
+  if (isSuiAanandOrCole || Math.random() > 0.3) {
+    console.log("I TWEETED ", toot, tweet.text, tweet.user.screen_name)
+    T.post('favorites/create', {id: tweet.id_str}, function (e, d, r){
+      if (e) console.log(e)
+      T.post('statuses/update', {status: '@' + tweet.user.screen_name + ' ' + toot, in_reply_to_status_id: tweet.id_str}, function (err, data, response) {
+       if (err) throw err
+       console.log(data)
+       fs.writeFileSync('./lastId', data.id_str)
+        // delete the temp selfie file.
+       fs.unlink('./temp/' + cleanUrl(tweet.extended_entities.media[0].media_url), function(){console.log('deleted something')}) // delete the temp selfie
+      })
     })
-  })
+  } else {
+    console.log('no dice', tweet.text)
+  }
 }
 
 function replyIfTheTweetIsASelfie (tweet) {
