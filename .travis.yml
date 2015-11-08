@@ -1,10 +1,11 @@
-sudo: required
+sudo: false
 language: node_js
 node_js:
   - "0.12"
 cache:
   directories:
     - $HOME/opencv
+    - opencv
 addons:
   apt:
     packages:
@@ -23,6 +24,6 @@ before_install:
   - cd build
   - cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
   - make
-  - sudo make install
+  - make install
   - ldconfig
   - cd ../..
