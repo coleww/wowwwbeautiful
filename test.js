@@ -2,7 +2,9 @@ var tap = require('tap')
 var utils = require('./src/utils')
 var fs = require('fs')
 var config = require('./src/config')
-
+var compliment = utils.compliment
+var emojiRegex = require('emoji-regex')
+var getImagePaths = utils.getImagePaths
 var tweet = {
   text: 'wow, beautiful',
   user: {
@@ -111,10 +113,12 @@ tap.test('does not detect not face things', function (t) {
   })
 })
 
-function getImagePaths (type) {
-  return fs.readdirSync(__dirname + '/test_imgs').filter(function (f) {
-    return f.match(type)
-  }).map(function (f) {
-    return __dirname + '/test_imgs/' + f
-  })
-}
+
+tap.test('returns a compliment', function (t) {
+  t.plan(2)
+  t.ok(compliment().length, 'returns...something')
+  t.ok(emojiRegex().test(compliment()), 'contains an emoji')
+})
+
+
+

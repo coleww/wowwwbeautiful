@@ -101,8 +101,17 @@ function detectSelfie (path, t, ht, ms, cb) {
   })
 }
 
+function getImagePaths (type) {
+  return fs.readdirSync('./test_imgs').filter(function (f) {
+    return f.match(type)
+  }).map(function (f) {
+    return './test_imgs/' + f
+  })
+}
+
 module.exports = {
   hasImage: hasImage,
+  getImagePaths: getImagePaths,
   willNotNotifyOtherUsers: willNotNotifyOtherUsers,
   willHopefullyNotBeDisrespectful: willHopefullyNotBeDisrespectful,
   thisTweetIsPromising: thisTweetIsPromising,
