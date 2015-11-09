@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "standard && node test.js"
+    "test": "standard && node test.js",
+    "start": "forever ./src/selfie_detective.js"
   },
   "dependencies": {
     "after": "^0.8.1",
     "call-next-tick": "^1.1.2",
     "canvas": "^1.2.8",
+    "forever": "^0.15.1",
     "forever-monitor": "^1.7.0",
     "ocrad.js": "https://github.com/antimatter15/ocrad.js/archive/master.tar.gz",
     "opencv": "^3.2.0",
