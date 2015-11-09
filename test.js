@@ -1,6 +1,5 @@
 var tap = require('tap')
 var utils = require('./src/utils')
-var fs = require('fs')
 var config = require('./src/config')
 var compliment = utils.compliment
 var emojiRegex = require('emoji-regex')
@@ -113,12 +112,8 @@ tap.test('does not detect not face things', function (t) {
   })
 })
 
-
 tap.test('returns a compliment', function (t) {
   t.plan(2)
   t.ok(compliment().length, 'returns...something')
   t.ok(emojiRegex().test(compliment()), 'contains an emoji')
 })
-
-
-
