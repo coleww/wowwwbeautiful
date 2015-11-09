@@ -3,6 +3,7 @@
 /www/bundle.js
 npm-debug.log
 /temp
-config.js
+src/SECRETconfig.js
 optimize/selfies/*
 optimize/out.txt
+dump.rdb

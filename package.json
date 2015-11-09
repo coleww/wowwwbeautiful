@@ -2,13 +2,19 @@
   "name": "wowwwwbeautiful",
   "version": "1.0.0",
   "main": "index.js",
+  "scripts": {
+    "test": "standard && node test.js"
+  },
   "dependencies": {
+    "after": "^0.8.1",
     "call-next-tick": "^1.1.2",
     "canvas": "^1.2.8",
+    "forever-monitor": "^1.7.0",
     "ocrad.js": "https://github.com/antimatter15/ocrad.js/archive/master.tar.gz",
     "opencv": "^3.2.0",
     "pick-random": "^1.0.1",
     "quidprofollow": "^1.2.1",
+    "redis": "^2.3.0",
     "request": "^2.65.0",
     "rimraf": "^2.4.3",
     "this-is-probably-ok-to-say": "^1.0.7",
@@ -16,5 +22,10 @@
   },
   "license": "MIT",
   "description": "selfie-faves ----------------",
-  "author": "Cole Willsea <coleww@gmail.com> (http://colewillsea.com/)"
+  "author": "Cole Willsea <coleww@gmail.com> (http://colewillsea.com/)",
+  "devDependencies": {
+    "emoji-regex": "^6.0.0",
+    "standard": "^5.3.1",
+    "tap": "^2.2.0"
+  }
 }

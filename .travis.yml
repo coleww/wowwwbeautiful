@@ -1,3 +1,29 @@
+sudo: required
 language: node_js
 node_js:
   - "0.12"
+cache:
+  apt: true
+  directories:
+    - $HOME/opencv
+    - opencv
+addons:
+  apt:
+    packages:
+    - libcairo2-dev
+    - libjpeg8-dev
+    - libpango1.0-dev
+    - libgif-dev
+    - build-essential
+    - g++
+before_install:
+  - export LD_LIBRARY_PATH="/lib:/usr/lib:/usr/local/lib"
+  - git clone https://github.com/Itseez/opencv.git
+  - cd opencv
+  - git checkout 2.4
+  - mkdir build
+  - cd build
+  - cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local ..
+  - make
+  - sudo make install
+  - cd ../..
