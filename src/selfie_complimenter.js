@@ -8,7 +8,7 @@ var Twit = require('twit')
 var T = new Twit(twitConfig)
 
 function popQueue () {
-  client.lpop('queue', function (err, tweetString) {
+  client.lpop('selfies', function (err, tweetString) {
     console.log('popping', tweetString)
     if (err) {
       console.log(err)
@@ -25,22 +25,23 @@ function popQueue () {
         } else if (!lastTweeted || (timestamp - lastTweeted > replyInterval)) {
           var myTweet = '@' + user + ' ' + compliment()
           console.log(t.id_str, 'THE REPLY:', myTweet)
-          T.post('favorites/create', {id: t.id_str}, function (e, d, r) {
-            if (e) console.log(t.id_str, 'faverr', e)
-            T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
-              if (err) {
-                console.log(t.id_str, 'replyerr:', err)
-                // close connection and program
-                client.end()
-              } else {
-                console.log(t.id_str, 'reply:', data)
-                // record current timestamp for this user
-                client.set('&' + user, timestamp + '', redis.print)
-                client.end()
-              }
-            })
-          })
+          // T.post('favorites/create', {id: t.id_str}, function (e, d, r) {
+          //   if (e) console.log(t.id_str, 'faverr', e)
+          //   T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
+          //     if (err) {
+          //       console.log(t.id_str, 'replyerr:', err)
+          //       // close connection and program
+          //       client.end()
+          //     } else {
+          //       console.log(t.id_str, 'reply:', data)
+          //       // record current timestamp for this user
+          //       client.set('&' + user, timestamp + '', redis.print)
+          //       client.end()
+          //     }
+          //   })
+          // })
         } else {
+          console.log('popping again')
           popQueue()
         }
       })
