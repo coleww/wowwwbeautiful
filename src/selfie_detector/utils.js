@@ -12,25 +12,8 @@ function detectText (path, cb) {
     var canvas = new Canvas(width, height)
     var ctx = canvas.getContext('2d')
     ctx.drawImage(img, 0, 0, width, height)
-    var pixels = ctx.getImageData(0, 0, width, height)
-
-    // check for text in the plain image
-    var ocrPlain = ocrad(canvas).replace(/\W|\_/g, '')
-
-    // try to detect the white impact meme font by threshholding on white-ish pixels
-    ctx.putImageData(threshhold(JSON.parse(JSON.stringify(pixels)), 230), 0, 0, width, height)
-    var ocrLight = ocrad(canvas).replace(/\W|\_/g, '')
-
-    // threshhold on dark pixels to try to accentuate text
-    ctx.putImageData(threshhold(JSON.parse(JSON.stringify(pixels)), 30), 0, 0, width, height)
-    var ocrDark = ocrad(canvas).replace(/\W|\_/g, '')
-
-    // take the longest string detected by the OCR runs.
-    var detected = [ocrPlain, ocrLight, ocrDark].sort(function (a, b) {
-      return b.length - a.length
-    })[0]
-
-    cb(detected)
+    var ocr = ocrad(canvas).replace(/\W|\_/g, '')
+    cb(ocr)
   }
   fs.readFile(path, function (err, data) {
     if (err) console.log(err)
