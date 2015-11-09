@@ -6,6 +6,7 @@
     "test": "standard && node test.js"
   },
   "dependencies": {
+    "after": "^0.8.1",
     "call-next-tick": "^1.1.2",
     "canvas": "^1.2.8",
     "forever-monitor": "^1.7.0",
