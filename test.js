@@ -73,10 +73,8 @@ tap.test('willHopefullyNotBeDisrespectful', function (t) {
 tap.test('detects text', function (t) {
   var testImgs = getImagePaths('text')
   t.plan(testImgs.length)
-  console.log(testImgs)
   testImgs.forEach(function (img) {
     utils.detectText(img, function (text) {
-      console.log(img, text)
       t.ok(text.length > config.ocrMax)
     })
   })

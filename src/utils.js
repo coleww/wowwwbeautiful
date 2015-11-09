@@ -65,14 +65,12 @@ var cascades = [__dirname + '/../node_modules/opencv/data/haarcascade_frontalfac
                 __dirname + '/../node_modules/opencv/data/haarcascade_eye_tree_eyeglasses.xml']
 
 function detectSelfie (path, t, ht, ms, cb) {
-  console.log('DETECTING', path, t, ht, ms)
   cv.readImage(path, function (err, im) {
     if (err) {
       console.log(err)
     } else {
       var results = []
       var init = after(cascades.length, function () {
-        console.log(results)
         if (results.length) {
           var allResults = results.reduce(function (a, b) {
             return a.concat(b)
@@ -86,7 +84,6 @@ function detectSelfie (path, t, ht, ms, cb) {
         }
       })
       cascades.forEach(function (cascade) {
-        console.log(cascade)
         im.detectObject(cascade, {}, function (err, result) {
           if (err) {
             console.log(t.id_st, 'ocverr', err)
