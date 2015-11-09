@@ -12,3 +12,19 @@
 - TODO: explain microservices
 - TODO: explain testing
 
+SELFIE_DETECTIVE
+---------------------
+
+The Selfie Detector streams the bot's timeline 
+and runs potential selfies through OCR (to try to eliminate memes, screenshots, etc.),
+as well as multiple OpenCV cascades,
+and pushes tweets that contain images that match certain criteria onto a redis queue.
+
+SELFIE_COMPLIMENTER
+-----------------------
+
+The Selfie Complimenter pulls tweets off a redis queue and replies to them with a compliment,
+while also checking to make sure that it does not reply to the same user too often.
+
+-------------------------------
+
