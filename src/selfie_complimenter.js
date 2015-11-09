@@ -1,7 +1,6 @@
 // uncomment this next line to crash everything
 // throw 'a big fit'
 
-
 var redis = require('redis')
 var client = redis.createClient()
 var compliment = require('./utils').compliment
