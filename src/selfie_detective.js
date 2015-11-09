@@ -28,7 +28,13 @@ stream.on('tweet', function (t) {
         } else {
           utils.detectSelfie(path, t, hasSelfieHashtag, minSize, function (itsProbablyASelfie) {
             console.log(t.id_str, 'is a selfie probably!!!')
-            client.rpush('selfies', JSON.stringify(itsProbablyASelfie), redis.print)
+            var isSuiAanandOrCole = !!t.user.screen_name.match(/^(swayandsea|colewillsea|aanand)$/)
+            if (isSuiAanandOrCole || Math.random() > 0.3) {
+              console.log(t.id_str, 'pushing')
+              client.rpush('selfies', JSON.stringify(itsProbablyASelfie), redis.print)
+            } else {
+              console.log(t.id_str, 'no dice')
+            }
             fs.unlink(path, function () {})
           })
         }

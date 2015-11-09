@@ -6,3 +6,4 @@ npm-debug.log
 src/SECRETconfig.js
 optimize/selfies/*
 optimize/out.txt
+dump.rdb
