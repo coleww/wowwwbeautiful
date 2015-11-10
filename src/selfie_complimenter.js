@@ -10,56 +10,59 @@ var replyInterval = config.replyInterval
 var Twit = require('twit')
 var T = new Twit(twitConfig)
 
-function popQueue () {
-  client.lpop('selfies', function (err, tweetString) {
-    console.log('popping', tweetString)
-    if (err) {
-      console.log(err)
-      client.end()
-    } else if (tweetString !== null) {
-      var t = JSON.parse(tweetString)
-      var user = t.user.screen_name
-      // if not null, check if we've already tweeted at this user recently
-      client.exists('&' + user, function (err, lastTweeted) {
-        console.log(t.id_str, 'last replied to this user', lastTweeted)
-        var timestamp = new Date().getTime()
-        // if we haven't already tweeted, tweet and save a timestamp
-        if (err) {
-          console.log(err)
-          client.end()
-        } else if (!lastTweeted || (timestamp - lastTweeted > replyInterval)) {
-          var myTweet = '@' + user + ' ' + compliment()
-          console.log(t.id_str, 'THE REPLY:', myTweet)
-          if (config.live) {
-            T.post('favorites/create', {id: t.id_str}, function (e, d, r) {
-              if (e) {
-                console.log(t.id_str, 'faverr', e)
+client.lpop('selfies', function (err, tweetString) {
+  console.log('popping', tweetString)
+  if (err) {
+    console.log(err)
+    client.end()
+    throw "a party"
+  } else if (tweetString !== null) {
+    var t = JSON.parse(tweetString)
+    var user = t.user.screen_name
+    // if not null, check if we've already tweeted at this user recently
+    client.exists('&' + user, function (err, lastTweeted) {
+      console.log(t.id_str, 'last replied to this user', lastTweeted)
+      var timestamp = new Date().getTime()
+      // if we haven't already tweeted, tweet and save a timestamp
+      if (err) {
+        console.log(err)
+        client.end()
+        throw "a party"
+      } else if (!lastTweeted || (timestamp - lastTweeted > replyInterval)) {
+        var myTweet = '@' + user + ' ' + compliment()
+        console.log(t.id_str, 'THE REPLY:', myTweet)
+        if (config.live) {
+          T.post('favorites/create', {id: t.id_str}, function (e, d, r) {
+            if (e) {
+              console.log(t.id_str, 'faverr', e)
+              client.end()
+              throw "a party"
+            }
+            T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
+              if (err) {
+                console.log(t.id_str, 'replyerr:', err)
+                // close connection and program
                 client.end()
+                throw "a party"
+              } else {
+                console.log(t.id_str, 'reply:', data)
+                // record current timestamp for this user
+                client.set('&' + user, timestamp + '', redis.print)
+                client.end()
+                throw "a party"
               }
-              T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
-                if (err) {
-                  console.log(t.id_str, 'replyerr:', err)
-                  // close connection and program
-                  client.end()
-                } else {
-                  console.log(t.id_str, 'reply:', data)
-                  // record current timestamp for this user
-                  client.set('&' + user, timestamp + '', redis.print)
-                  client.end()
-                }
-              })
             })
-          }
+          })
         }
-      })
-    } else {
-      // OH, OF COURSE!
-      client.end()
-    }
-  })
-}
+      }
+    })
+  } else {
+    // OH, OF COURSE!
+    client.end()
+    throw "a party"
+  }
+})
 
-popQueue()
 
 // // popQueue modified from sorting-bot by Darius Kazemi
 // // https://github.com/dariusk/sorting-bot/blob/master/index.js
