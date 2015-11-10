@@ -52,6 +52,9 @@ function popQueue () {
           }
         }
       })
+    } else {
+      // OH, OF COURSE!
+      client.end()
     }
   })
 }
