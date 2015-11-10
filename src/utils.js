@@ -49,6 +49,7 @@ function detectText (path, cb) {
     var canvas = new Canvas(width, height)
     var ctx = canvas.getContext('2d')
     ctx.drawImage(img, 0, 0, width, height)
+    // try to detect any text in the image, removing the obvious noise
     var ocr = ocrad(canvas).replace(/\W|\_/g, '')
     cb(ocr)
   }
@@ -85,6 +86,7 @@ function detectSelfie (path, t, ht, ms, cb) {
             return img.width > probs
           })
           console.log(t.id_str, 'DATA', validResults)
+          // if at least half of the cascades detect something, consider it a selfie.
           if (validResults.length / allResults.length > 0.5) cb(t)
         }
       })
