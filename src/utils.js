@@ -62,7 +62,12 @@ var cascades = [__dirname + '/../node_modules/opencv/data/haarcascade_frontalfac
                 __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_default.xml',
                 __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt.xml',
                 __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt2.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_eye_tree_eyeglasses.xml']
+                __dirname + '/../node_modules/opencv/data/haarcascade_eye_tree_eyeglasses.xml',
+                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_eyepair_big.xml',
+                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_eyepair_small.xml',
+                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_mouth.xml',
+                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_nose.xml',
+                __dirname + '/../node_modules/opencv/data/haarcascade_profileface.xml']
 
 function detectSelfie (path, t, ht, ms, cb) {
   cv.readImage(path, function (err, im) {
