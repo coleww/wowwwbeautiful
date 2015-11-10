@@ -37,21 +37,22 @@ client.lpop('selfies', function (err, tweetString) {
               console.log(t.id_str, 'faverr', e)
               client.end()
               throw "a party"
+            } else {
+              T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
+                if (err) {
+                  console.log(t.id_str, 'replyerr:', err)
+                  // close connection and program
+                  client.end()
+                  throw "a party"
+                } else {
+                  console.log(t.id_str, 'reply:', data)
+                  // record current timestamp for this user
+                  client.set('&' + user, timestamp + '', redis.print)
+                  client.end()
+                  throw "a party"
+                }
+              })
             }
-            T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
-              if (err) {
-                console.log(t.id_str, 'replyerr:', err)
-                // close connection and program
-                client.end()
-                throw "a party"
-              } else {
-                console.log(t.id_str, 'reply:', data)
-                // record current timestamp for this user
-                client.set('&' + user, timestamp + '', redis.print)
-                client.end()
-                throw "a party"
-              }
-            })
           })
         }
       }
