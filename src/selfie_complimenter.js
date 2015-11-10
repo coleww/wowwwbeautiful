@@ -15,6 +15,7 @@ function popQueue () {
     console.log('popping', tweetString)
     if (err) {
       console.log(err)
+      client.end()
     } else if (tweetString !== null) {
       var t = JSON.parse(tweetString)
       var user = t.user.screen_name
@@ -25,12 +26,16 @@ function popQueue () {
         // if we haven't already tweeted, tweet and save a timestamp
         if (err) {
           console.log(err)
+          client.end()
         } else if (!lastTweeted || (timestamp - lastTweeted > replyInterval)) {
           var myTweet = '@' + user + ' ' + compliment()
           console.log(t.id_str, 'THE REPLY:', myTweet)
           if (config.live) {
             T.post('favorites/create', {id: t.id_str}, function (e, d, r) {
-              if (e) console.log(t.id_str, 'faverr', e)
+              if (e) {
+                console.log(t.id_str, 'faverr', e)
+                client.end()
+              }
               T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
                 if (err) {
                   console.log(t.id_str, 'replyerr:', err)
