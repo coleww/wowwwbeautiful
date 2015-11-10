@@ -9,6 +9,6 @@ module.exports = {
   selfieRegex: /selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i, // strings to reply more often to
   ocrMax: 8, // max # of chars that can be detected in the image
   minSize: 10, // detected face should be greated than width / minSize
-  replyInterval: 1000 * 60 * 60, // wait at least an hour before replying to someone again
+  replyInterval: 1000 * 60 * 60 * 6, // wait time before replying to someone again
   live: true
 }
