@@ -45,9 +45,6 @@ function popQueue () {
               })
             })
           }
-        } else {
-          console.log('popping again')
-          popQueue()
         }
       })
     }
