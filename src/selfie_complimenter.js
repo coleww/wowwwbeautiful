@@ -20,41 +20,52 @@ client.lpop('selfies', function (err, tweetString) {
     var t = JSON.parse(tweetString)
     var user = t.user.screen_name
     // if not null, check if we've already tweeted at this user recently
-    client.exists('&' + user, function (err, lastTweeted) {
-      console.log(t.id_str, 'last replied to this user', lastTweeted)
+    client.exists('&' + user, function (err, exists) {
+      console.log(t.id_str, 'we have replied to this user', exists)
       var timestamp = new Date().getTime()
       // if we haven't already tweeted, tweet and save a timestamp
       if (err) {
         console.log(err)
         client.end()
         throw "a party"
-      } else if (!lastTweeted || (timestamp - lastTweeted > replyInterval)) {
-        var myTweet = '@' + user + ' ' + compliment()
-        console.log(t.id_str, 'THE REPLY:', myTweet)
-        if (config.live) {
-          T.post('favorites/create', {id: t.id_str}, function (e, d, r) {
-            if (e) {
-              console.log(t.id_str, 'faverr', e)
-              client.end()
-              throw "a party"
-            } else {
-              T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
-                if (err) {
-                  console.log(t.id_str, 'replyerr:', err)
-                  // close connection and program
-                  client.end()
-                  throw "a party"
-                } else {
-                  console.log(t.id_str, 'reply:', data)
-                  // record current timestamp for this user
-                  client.set('&' + user, timestamp + '', redis.print)
-                  client.end()
-                  throw "a party"
-                }
-              })
+      } else{
+        client.get('&' + user, function (err, lastTweeted) {
+          if (err) {
+            console.log(err)
+            client.end()
+            throw "a party"
+          } else{
+            if (!exists || (timestamp - parseInt(lastTweeted) > replyInterval)) {
+              var myTweet = '@' + user + ' ' + compliment()
+              console.log(t.id_str, 'THE REPLY:', myTweet)
+              if (config.live) {
+                T.post('favorites/create', {id: t.id_str}, function (e, d, r) {
+                  if (e) {
+                    console.log(t.id_str, 'faverr', e)
+                    client.end()
+                    throw "a party"
+                  } else {
+                    T.post('statuses/update', {status: myTweet, in_reply_to_status_id: t.id_str}, function (err, data, response) {
+                      if (err) {
+                        console.log(t.id_str, 'replyerr:', err)
+                        // close connection and program
+                        client.end()
+                        throw "a party"
+                      } else {
+                        console.log(t.id_str, 'reply:', data)
+                        // record current timestamp for this user
+                        client.set('&' + user, timestamp + '', function () {
+                          client.end()
+                          throw "a party"
+                        })
+                      }
+                    })
+                  }
+                })
+              }
             }
-          })
-        }
+          }
+        })
       }
     })
   } else {
