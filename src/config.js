@@ -5,7 +5,7 @@ module.exports = {
     'access_token': 'SPIDERS!',
     'access_token_secret': 'moreSPIDERS!'
   },
-  filterRegex: /sayhername|tw |cw |trigger|warning|tw\:|cw\:/i, // strings to not reply to
+  filterRegex: /sayhername|paris|france|tw |cw |trigger|warning|tw\:|cw\:/i, // strings to not reply to
   selfieRegex: /selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i, // strings to reply more often to
   ocrMax: 8, // max # of chars that can be detected in the image
   minSize: 10, // detected face should be greated than width / minSize
