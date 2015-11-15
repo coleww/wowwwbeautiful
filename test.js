@@ -27,6 +27,13 @@ tap.test('thisTweetIsPromising', function (t) {
   t.ok(utils.thisTweetIsPromising(tweet))
 })
 
+tap.test('withinEachOther', function (t) {
+  t.plan(3)
+  t.ok(utils.withinEachOther(0, 0, 100, 25, 50, 10))
+  t.ok(!utils.withinEachOther(75, 0, 100, 100, 50, 50))
+  t.ok(!utils.withinEachOther(0, 75, 100, 100, 50, 50))
+})
+
 tap.test('hasImage', function (t) {
   t.plan(3)
   t.ok(utils.hasImage(tweet))

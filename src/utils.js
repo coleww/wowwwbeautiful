@@ -59,16 +59,31 @@ function detectText (path, cb) {
   })
 }
 
-var cascades = [__dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt_tree.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_default.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt2.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_eye_tree_eyeglasses.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_eyepair_big.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_eyepair_small.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_mouth.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_mcs_nose.xml',
-                __dirname + '/../node_modules/opencv/data/haarcascade_profileface.xml']
+var generalFaceCascades = [
+  __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt_tree.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_default.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_frontalface_alt2.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_profileface.xml',
+  __dirname + '/../cascades/headshoulders.xml']
+
+var captainFaceCascades = [
+  __dirname + '/../cascades/lefteye.xml',
+  __dirname + '/../cascades/righteye.xml',
+  __dirname + '/../cascades/frontalEyes.xml',
+  __dirname + '/../cascades/haarcascade_smile.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_eye_tree_eyeglasses.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_mcs_eyepair_big.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_mcs_eyepair_small.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_mcs_mouth.xml',
+  __dirname + '/../node_modules/opencv/data/haarcascade_mcs_nose.xml']
+
+// check if generalFaces match,
+// then make sure there are captains behind those generals
+
+function withinEachOther (x, y, w, h, x2, y2) {
+  return x2 > x && (x2 < x + w) && y2 > y && (y2 < y + h)
+}
 
 function detectSelfie (path, t, ht, ms, cb) {
   cv.readImage(path, function (err, im) {
@@ -76,7 +91,8 @@ function detectSelfie (path, t, ht, ms, cb) {
       console.log(err)
     } else {
       var results = []
-      var init = after(cascades.length, function () {
+      var reallyCertains = []
+      var init = after(generalFaceCascades.length, function () {
         if (results.length) {
           var allResults = results.reduce(function (a, b) {
             return a.concat(b)
@@ -84,13 +100,33 @@ function detectSelfie (path, t, ht, ms, cb) {
           var validResults = allResults.filter(function (img) {
             var probs = ht ? 0 : (im.width() / ms)
             return img.width > probs
+          }).sort(function (a, b) {
+            return b.width - a.width
           })
           console.log(t.id_str, 'DATA', validResults)
-          // if at least half of the cascades detect something, consider it a selfie.
-          if (validResults.length / allResults.length > 0.5) cb(t)
+          if (validResults.length / generalFaceCascades.length > 0.3) {
+            var theOne = validResults[0]
+            console.log(t.id_str, 'the_one', theOne)
+            var finallyInit = after(captainFaceCascades.length, function () {
+              if (reallyCertains.length / captainFaceCascades.length > 0.3) cb(t)
+            })
+            captainFaceCascades.forEach(function (casc) {
+              im.detectObject(casc, {}, function (err, restemp) {
+                var res2 = restemp && restemp.sort(function (a, b) {
+                  return b.width - a.width
+                })[0]
+                if (err) {
+                  console.log(t.id_st, 'ocverr', err)
+                } else if (res2 && withinEachOther(theOne.x, theOne.y, theOne.width, theOne.height, res2.x + (res2.width / 2), res2.y + (res2.height / 2))) {
+                  reallyCertains.push(res2)
+                }
+                finallyInit()
+              })
+            })
+          }
         }
       })
-      cascades.forEach(function (cascade) {
+      generalFaceCascades.forEach(function (cascade) {
         im.detectObject(cascade, {}, function (err, result) {
           if (err) {
             console.log(t.id_st, 'ocverr', err)
@@ -121,5 +157,6 @@ module.exports = {
   thisTweetIsPromising: thisTweetIsPromising,
   detectSelfie: detectSelfie,
   detectText: detectText,
-  compliment: compliment
+  compliment: compliment,
+  withinEachOther: withinEachOther
 }
