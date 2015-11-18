@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npm install && standard && node test.js",
+    "test": "npm install -g standard && standard && node test.js",
     "start": "forever ./src/selfie_detective.js -o ../../logs/wowbscan.log -e ../../logs/wowberr.log"
   },
   "dependencies": {
