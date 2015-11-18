@@ -48,7 +48,7 @@ tap.test('hasImage', function (t) {
   
   var gifImages = JSON.parse(JSON.stringify(tweet))
   manyImages.extended_entities.media.push({url: 'wowlol.gif'})
-  t.ok(!utils.hasImage(manyImages), 'rejects gifs cuz y u taking a gif selfie thats a vine, yo!)
+  t.ok(!utils.hasImage(manyImages), 'rejects gifs cuz y u taking a gif selfie thats a vine, yo!')
 })
 
 tap.test('willNotNotifyOtherUsers', function (t) {
