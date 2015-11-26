@@ -1,9 +1,9 @@
 module.exports = {
   twitter: {
-    'consumer_key': 'SPIDERS!',
-    'consumer_secret': 'spiders!!!',
-    'access_token': 'SPIDERS!',
-    'access_token_secret': 'moreSPIDERS!'
+    'consumer_key': process.env.CONSUMER_KEY,
+    'consumer_secret': process.env.CONSUMER_SECRET,
+    'access_token': process.env.ACCESS_TOKEN,
+    'access_token_secret': process.env.ACCESS_TOKEN_SECRET
   },
   filterRegex: /sayhername|paris|porteouverte|france|pray|tw |cw |trigger|warning|tw\:|cw\:/i, // strings to not reply to
   selfieRegex: /selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i, // strings to reply more often to
