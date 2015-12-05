@@ -21,7 +21,12 @@ function compliment () {
 }
 
 function thisTweetIsPromising (t) {
-  return hasImage(t) && willNotNotifyOtherUsers(t) && willHopefullyNotBeDisrespectful(t)
+  return hasImage(t) && willNotNotifyOtherUsers(t) && willHopefullyNotBeDisrespectful(t) && probablyNotABot(t)
+}
+
+function probablyNotABot (t) {
+  console.log('CRUCIALBOTDETECTIONDATA', t.user.screen_name.match(/\d+\w+\d+/i))
+  return !t.user.screen_name.match(/\d+\w+\d+/i)
 }
 
 function hasImage (t) {
