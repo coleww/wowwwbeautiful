@@ -31,7 +31,7 @@ function probablyNotABot (t) {
 
 function hasImage (t) {
   // only look at tweets that have 1 image for now. better to focus than try to catch everything i think...
-  return t.extended_entities && t.extended_entities.media && t.extended_entities.media.length === 1 && t.extended_entities.media[0].media_url.match(/png|jpg|jpeg/i)
+  return t.extended_entities && t.extended_entities.media && t.extended_entities.media.length === 1 && t.extended_entities.media[0].media_url.match(/png|jpg|jpeg/i) && t.extended_entities.media[0].type !== 'animated_gif'
 }
 
 function willNotNotifyOtherUsers (t) {
