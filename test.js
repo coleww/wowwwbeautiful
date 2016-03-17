@@ -16,7 +16,7 @@ var tweet = {
   extended_entities: {
     media: [
       {
-        url: 'www.example.png'
+        media_url: 'www.example.png'
       }
     ]
   }
@@ -45,7 +45,7 @@ tap.test('hasImage', function (t) {
   var manyImages = JSON.parse(JSON.stringify(tweet))
   manyImages.extended_entities.media.push({url: 'wowlol.png'})
   t.ok(!utils.hasImage(manyImages), 'only accepts single image tweets')
-  
+
   var gifImages = JSON.parse(JSON.stringify(tweet))
   manyImages.extended_entities.media.push({url: 'wowlol.gif'})
   t.ok(!utils.hasImage(manyImages), 'rejects gifs cuz y u taking a gif selfie thats a vine, yo!')
