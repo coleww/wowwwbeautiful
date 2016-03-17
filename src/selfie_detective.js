@@ -27,14 +27,8 @@ stream.on('tweet', function (t) {
           fs.unlink(path, function () {})
         } else {
           utils.detectSelfie(path, t, hasSelfieHashtag, minSize, function (itsProbablyASelfie) {
-            console.log(t.id_str, 'is a selfie probably!!!')
-            var isSuiOrCole = !!t.user.screen_name.match(/^(swayandsea|colewillsea)$/)
-            if (isSuiOrCole || Math.random() > 0.3) {
-              console.log(t.id_str, 'pushing')
-              client.rpush('selfies', JSON.stringify(itsProbablyASelfie), redis.print)
-            } else {
-              console.log(t.id_str, 'no dice')
-            }
+            console.log(t.id_str, 'is a selfie probably!!! pushing')
+            client.rpush('selfies', JSON.stringify(itsProbablyASelfie), redis.print)
             fs.unlink(path, function () {})
           })
         }
