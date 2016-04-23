@@ -5,7 +5,11 @@ module.exports = {
     'access_token': process.env.ACCESS_TOKEN,
     'access_token_secret': process.env.ACCESS_TOKEN_SECRET
   },
-  filterRegex: /\bsir|misgender|sayhername|paris|porteouverte|tdor|peace|france|pray|tw |cw |trigger|warning|tw\:|cw\:/i, // strings to not reply to
+  // hrm
+  // will this
+  // make it easier
+  // hrmmmm
+  filterRegex: /\bsir|misgender|fuck|\bcis|\bman|sayhername|paris|porteouverte|tdor|peace|france|pray|tw |cw |trigger|warning|tw\:|cw\:/i, // strings to not reply to
   selfieRegex: /selfie|selfiearmy|transisbeautiful|bodyposi|bodypositive|selfportrait/i, // strings to reply more often to
   ocrMax: 8, // max # of chars that can be detected in the image
   minSize: 10, // detected face should be greated than width / minSize
